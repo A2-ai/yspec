@@ -2,7 +2,8 @@
 print.ycol <- function(x,...) {
   rnge <- '.'
   if(!is.null(x$range)) {
-    rnge <- paste0(x$range[1], " to ", x$range[2])
+    #rnge <- paste0(x$range[1], " to ", x$range[2])
+    rnge <- ranges_to_define(x$range)
   }
   x$unit <- ifelse(is.null(x$unit), '.', x$unit)
   name <- c("col", "type", "short", "unit", "range")

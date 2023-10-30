@@ -336,7 +336,7 @@ unpack_col <- function(x) {
   x <- unpack_about(x)
   x$continuous <- .has("range",x)
   if(x$continuous) {
-    x$range <- unlist(x$range, use.names=FALSE)
+    #x$range <- unlist(x$range, use.names=FALSE)
   }
   x$discrete <- .has("values",x) 
   if(.no("longvalues",x)) {

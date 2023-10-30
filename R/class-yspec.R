@@ -362,7 +362,8 @@ Range.ycol <- function(x, default = '.', ...) {
   if(.no("range",x)) {
     return(default)
   }
-  paste(x[["range"]], collapse = " to ")
+  ranges_to_define(x[["range"]])
+  #paste(x[["range"]], collapse = " to ")
 }
 ##' @export
 Range.yspec <- function(x, default = '.', ...) {
