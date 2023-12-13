@@ -1,5 +1,0 @@
-```{r}
-getwd()
-ys_document("Test.yml")
-```
-

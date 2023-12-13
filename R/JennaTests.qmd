@@ -1,0 +1,14 @@
+```{r}
+getwd()
+spec <- ys_load("../test_ys_check.yml")
+ys_document(spec)
+
+AMT1 <- c(2, 35)
+AMT2 <- c(3, -999)
+df <- data.frame(AMT1, AMT2)
+df
+ys_check(df, spec)
+
+#yspec_select_discrete()
+```
+
