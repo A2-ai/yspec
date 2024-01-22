@@ -81,6 +81,20 @@ parse_list_no_char <- function(ranges) {
   return(list(cont, disc))
 } # parse_list_no_char
 
+multiple_ranges_check <- function(cont, x) {
+  library(purrr)
+  # min <- cont[1]
+  # max <- cont[2]
+  # x <- x[!(x <= cont[2] & x >= cont[1])]
+  for(i in cont) {
+    min <- i[1]
+    max <- i[2]
+    x <- x[!(x <= max & x >= min)]
+  }
+  #map(cont, \(cont) x <- x[!(x <= cont[2] & x >= cont[1])])
+  return(x)
+}
+
 # JENNA'S NEW FUNCTION
 check_range <- function(x,range,verbose=FALSE, con = NULL) {
   library(rlang)
@@ -105,13 +119,16 @@ check_range <- function(x,range,verbose=FALSE, con = NULL) {
   
   # Parse entire list
   lists <- parse_list_no_char(range)
-  cont <- unlist(lists[1])
+  cont <- lists[1]
   disc <- unlist(lists[2])
   
   # remove values in range first
-  min <- cont[1]
-  max <- cont[2]
-  x <- x[!(x <= max & x >= min)]
+  # min <- cont[1]
+  # max <- cont[2]
+  # x <- x[!(x <= max & x >= min)]
+  
+  # remove values in range first
+  x <- multiple_ranges_check(cont[[1]], x)
   
   # remove values in discrete set
   x <- x[!(x %in% disc)]

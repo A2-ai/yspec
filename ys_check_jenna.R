@@ -6,13 +6,13 @@ parse_list_no_char <- function(ranges) {
   
   for(i in ranges) {
     if (length(i) == 2) {
-      cont <- append(cont, i)
-      #cont[[length(cont) + 1]] <- i
+      #cont <- append(cont, i)
+      cont[[length(cont) + 1]] <- i
     } # if length 2
     
     else if (length(i) == 1) {
-      disc <- append(disc, i)
-      #disc[[length(disc) + 1]] <- i
+      #disc <- append(disc, i)
+      disc[[length(disc) + 1]] <- i
     } # else if length 1
     
     else { # else length > 2
@@ -59,15 +59,18 @@ library(rlang)
 
 } # check_range_test
 
-AMT1 <- c(2)
-AMT2 <- c(20)
-AMT3 <- c(-888)
-df <- data.frame(AMT1, AMT2, AMT3)
+# AMT1 <- c(2)
+# AMT2 <- c(20)
+# AMT3 <- c(-888)
+# df <- data.frame(AMT1, AMT2, AMT3)
 
-spec <- ys_load("~/Projects/yspec/test_ys_check.yml")
+#spec <- ys_load("~/Projects/yspec/test_ys_check.yml")
 #print(check_range_test(df$AMT3, spec$AMT3$range))
+#ys_check(df, spec, verbose = TRUE)
+
+
+AMT3 <- c(2, 35)
+df <- data.frame(AMT3)
+spec <- ys_load("~/Projects/yspec/tests/test4.yml")
 ys_check(df, spec, verbose = TRUE)
-
-
-
 
