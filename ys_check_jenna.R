@@ -1,18 +1,4 @@
-# check_range <- function(x,range,verbose=FALSE, con = NULL) {
-#   if(is.null(range) | is.null(x)) return(TRUE)
-#   if(length(range) !=2) return(FALSE)
-#   x <- x[!is.na(x)]
-#   if(length(x)==0) return(TRUE)
-#   if(verbose | !is.null(con)) {
-#     if(verbose) message("    range: ", paste0(range, collapse = ","))
-#     if(!is.null(con)) {
-#       cata("    range: ", paste0(range, collapse = ","),file = con)
-#     }
-#   }
-#   x <- sort(range(x))
-#   range <- sort(range)
-#   x[1] >= range[1] & x[2] <= range[2]
-# }
+library(testthat)
 
 parse_list_no_char <- function(ranges) {
   disc <- list()
@@ -20,11 +6,13 @@ parse_list_no_char <- function(ranges) {
   
   for(i in ranges) {
     if (length(i) == 2) {
-      cont[[length(cont) + 1]] <- i
+      cont <- append(cont, i)
+      #cont[[length(cont) + 1]] <- i
     } # if length 2
     
     else if (length(i) == 1) {
-      disc[[length(disc) + 1]] <- i
+      disc <- append(disc, i)
+      #disc[[length(disc) + 1]] <- i
     } # else if length 1
     
     else { # else length > 2
@@ -59,64 +47,50 @@ check_values <- function(x,values,verbose=FALSE, con = NULL, env = list()) {
 }
 
 
-check_range <- function(x,ranges,verbose=FALSE, con = NULL) {
-  if(is.null(ranges) | is.null(x)) return(TRUE)
+check_range_test <- function(x,range,verbose=FALSE, con = NULL) {
+library(rlang)
+
+  if(is.null(range) | is.null(x)) return(TRUE)
+  #if(length(range) !=2) return(FALSE)
+  x <- x[!is.na(x)]
   if(length(x)==0) return(TRUE)
   if(verbose | !is.null(con)) {
-    if(verbose) message("    range: ", paste0(ranges, collapse = ","))
+    if(verbose) message("    range: ", paste0(range, collapse = ","))
     if(!is.null(con)) {
-      cata("    range: ", paste0(ranges, collapse = ","),file = con)
+      cata("    range: ", paste0(range, collapse = ","),file = con)
     }
   }
+  # make a list if not a list
+  if (!is.list(range)) {
+    range <- list(range) }
   
-   
-  # remove missing values
-  x <- x[!is.na(x)]
-  # make values unique
-  x <- unlist(unique(x),use.names = FALSE)
+  # Parse entire list
+  lists <- parse_list_no_char(range)
+  cont <- unlist(lists[1])
+  disc <- unlist(lists[2])
   
-  # get disc values and ranges
-  lists <- parse_list_no_char(ranges)
+  # remove values in range first
+  min <- cont[1]
+  max <- cont[2]
+ x <- x[!(x <= max & x >= min)]
   
-  cont <- lists[1]
-  discrete <- lists[2]
+  # remove values in discrete set
+  x <- x[!(x %in% disc)]
   
-  # remove all discrete values from x
-  x <- setdiff(x,discrete) 
-  
-  # get union of ranges
-  # if (length(cont) == 2) {
-  #   range <- union(cont[1], cont[2])
-  # }
-  # else if (length(cont) == 1) {
-  #   range <- cont[1]
-  # }
-  # else {
-  #   stop("error: too many ranges")
-  # }
-  
-  # check if remaining values in range
-  if (length(cont) > 1) {
-    stop("error: ys_check only works with 1 cont. range right now")
-  }
-  x <- sort(range(x))
-  cont <- sort(cont)
-  x[1] >= cont[1] & x[2] <= cont[2]
-  
-} #check_discont_range
+  # if x is empty, everything was in range(s)
+  empty <- (is_empty(x))
+  return(empty)
 
-AMT1 <- c(2, 35)
-AMT2 <- c(3, -999)
-df <- data.frame(AMT1, AMT2)
-df
-range <- list(c(0, 20), c(40, 50))
+} # check_range_test
+
+AMT1 <- c(2)
+AMT2 <- c(21)
+AMT3 <- c(-888)
+df <- data.frame(AMT1, AMT2, AMT3)
+
+spec <- ys_load("~/Projects/yspec/test_ys_check.yml")
+print(check_range_test(df$AMT3, spec$AMT3$range))
 
 
-AMT1 <- c(2, 35)
-AMT2 <- c(3, -999)
-df <- data.frame(AMT1, AMT2)
-df
-ys_check(df, spec)
 
-#check_discont_range(df, range)
 

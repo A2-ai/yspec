@@ -42,69 +42,22 @@ parse_list_no_char <- function(ranges) {
   return(list(cont, disc))
 } # parse_list_no_char
 
-check_range <- function(x,ranges,verbose=FALSE, con = NULL) {
-  if(is.null(ranges) | is.null(x)) return(TRUE)
+
+check_range <- function(x,range,verbose=FALSE, con = NULL) {
+  if(is.null(range) | is.null(x)) return(TRUE)
+  if(length(range) !=2) return(FALSE)
+  x <- x[!is.na(x)]
   if(length(x)==0) return(TRUE)
   if(verbose | !is.null(con)) {
-    if(verbose) message("    range: ", paste0(ranges, collapse = ","))
+    if(verbose) message("    range: ", paste0(range, collapse = ","))
     if(!is.null(con)) {
-      cata("    range: ", paste0(ranges, collapse = ","),file = con)
+      cata("    range: ", paste0(range, collapse = ","),file = con)
     }
   }
-  
-  
-  # remove missing values
-  x <- x[!is.na(x)]
-  # make values unique
-  x <- unlist(unique(x),use.names = FALSE)
-  
-  # get disc values and ranges
-  lists <- parse_list_no_char(ranges)
-  
-  cont <- lists[1]
-  discrete <- lists[2]
-  
-  # remove all discrete values from x
-  x <- setdiff(x,discrete) 
-  
-  # get union of ranges
-  # if (length(cont) == 2) {
-  #   range <- union(cont[1], cont[2])
-  # }
-  # else if (length(cont) == 1) {
-  #   range <- cont[1]
-  # }
-  # else {
-  #   stop("error: too many ranges")
-  # }
-  
-  # check if remaining values in range
-  if (length(cont) > 1) {
-    stop("error: ys_check only works with 1 cont. range right now")
-  }
   x <- sort(range(x))
-  #cont <- sort(cont[[1]])
-  val1 <- cont[[1]][[1]]
-  val2 <= cont[[1]][[2]]
-  x[1] >= val1 & x[2] <= val2
-  
-} #check_discont_range
-
-# check_range <- function(x,range,verbose=FALSE, con = NULL) {
-#   if(is.null(range) | is.null(x)) return(TRUE)
-#   if(length(range) !=2) return(FALSE)
-#   x <- x[!is.na(x)]
-#   if(length(x)==0) return(TRUE)
-#   if(verbose | !is.null(con)) {
-#     if(verbose) message("    range: ", paste0(range, collapse = ","))
-#     if(!is.null(con)) {
-#       cata("    range: ", paste0(range, collapse = ","),file = con)
-#     }
-#   }
-#   x <- sort(range(x))
-#   range <- sort(range)
-#   x[1] >= range[1] & x[2] <= range[2]
-# }
+  range <- sort(range)
+  x[1] >= range[1] & x[2] <= range[2]
+}
 
 
 
