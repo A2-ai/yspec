@@ -23,30 +23,6 @@ parse_list_no_char <- function(ranges) {
 } # parse_list_no_char
 
 
-check_values <- function(x,values,verbose=FALSE, con = NULL, env = list()) {
-  if(is.null(values)  | is.null(x)) return(TRUE)
-  x <- x[!is.na(x)]
-  x <- unlist(unique(x),use.names = FALSE)
-  
-  if(verbose | !is.null(con)) {
-    valu <- values
-    if(length(values) > 3) {
-      valu <- c(valu[seq(3)], "...")
-    }
-    if(verbose) message("    values: ", paste0(valu, collapse = ','))
-    if(!is.null(con)) {
-      cata( "    values: ", paste0(valu, collapse = ','),file = con)
-    }
-  }
-  if(length(x)==0) return(TRUE)
-  ans <- all(x %in% values)
-  if(!ans) {
-    env$check_values_bad <- setdiff(x,values)  
-  }
-  return(ans)
-}
-
-
 check_range_test <- function(x,range,verbose=FALSE, con = NULL) {
 library(rlang)
 
@@ -84,12 +60,13 @@ library(rlang)
 } # check_range_test
 
 AMT1 <- c(2)
-AMT2 <- c(21)
+AMT2 <- c(20)
 AMT3 <- c(-888)
 df <- data.frame(AMT1, AMT2, AMT3)
 
 spec <- ys_load("~/Projects/yspec/test_ys_check.yml")
-print(check_range_test(df$AMT3, spec$AMT3$range))
+#print(check_range_test(df$AMT3, spec$AMT3$range))
+ys_check(df, spec, verbose = TRUE)
 
 
 

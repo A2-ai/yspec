@@ -1,6 +1,20 @@
 ```{r}
+library(testthat)
+AMT1 <- c(2)
+AMT2 <- c(20)
+AMT3 <- c(-888)
+df <- data.frame(AMT1, AMT2, AMT3)
 
+spec <- ys_load("~/Projects/yspec/test_ys_check.yml")
+#print(check_range_test(df$AMT3, spec$AMT3$range))
+ys_check(df, spec, verbose = TRUE)
 
+# test_that("single range and df has values in range", {
+#   AMT1 <- c(2)
+#   df <- data.frame(AMT1)
+#   ys_check(df, spec)
+# }
+  
 
 
 ```

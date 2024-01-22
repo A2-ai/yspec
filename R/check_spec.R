@@ -22,17 +22,56 @@ check_values <- function(x,values,verbose=FALSE, con = NULL, env = list()) {
   return(ans)
 }
 
+# parse_list_no_char <- function(ranges) {
+#   disc <- list()
+#   cont <- list()
+#   
+#   for(i in ranges) {
+#     if (length(i) == 2) {
+#       cont[[length(cont) + 1]] <- i
+#     } # if length 2
+#     
+#     else if (length(i) == 1) {
+#       disc[[length(disc) + 1]] <- i
+#     } # else if length 1
+#     
+#     else { # else length > 2
+#       stop("error: length of range > 2")
+#     } # else
+#   } # for 
+#   return(list(cont, disc))
+# } # parse_list_no_char
+
+# ORIGINAL FUNCTION
+# check_range <- function(x,range,verbose=FALSE, con = NULL) {
+#   if(is.null(range) | is.null(x)) return(TRUE)
+#   if(length(range) !=2) return(FALSE)
+#   x <- x[!is.na(x)]
+#   if(length(x)==0) return(TRUE)
+#   if(verbose | !is.null(con)) {
+#     if(verbose) message("    range: ", paste0(range, collapse = ","))
+#     if(!is.null(con)) {
+#       cata("    range: ", paste0(range, collapse = ","),file = con)
+#     }
+#   }
+#   x <- sort(range(x))
+#   range <- sort(range)
+#   x[1] >= range[1] & x[2] <= range[2]
+# }
+
 parse_list_no_char <- function(ranges) {
   disc <- list()
   cont <- list()
   
   for(i in ranges) {
     if (length(i) == 2) {
-      cont[[length(cont) + 1]] <- i
+      cont <- append(cont, i)
+      #cont[[length(cont) + 1]] <- i
     } # if length 2
     
     else if (length(i) == 1) {
-      disc[[length(disc) + 1]] <- i
+      disc <- append(disc, i)
+      #disc[[length(disc) + 1]] <- i
     } # else if length 1
     
     else { # else length > 2
@@ -42,22 +81,46 @@ parse_list_no_char <- function(ranges) {
   return(list(cont, disc))
 } # parse_list_no_char
 
-
+# JENNA'S NEW FUNCTION
 check_range <- function(x,range,verbose=FALSE, con = NULL) {
+  library(rlang)
+  
   if(is.null(range) | is.null(x)) return(TRUE)
-  if(length(range) !=2) return(FALSE)
+  #if(length(range) !=2) return(FALSE)
   x <- x[!is.na(x)]
   if(length(x)==0) return(TRUE)
   if(verbose | !is.null(con)) {
-    if(verbose) message("    range: ", paste0(range, collapse = ","))
+    # if(verbose) message("    range: ", paste0(range, collapse = ","))
+    if(verbose) {
+      message(ranges_to_define(range))
+    }
     if(!is.null(con)) {
-      cata("    range: ", paste0(range, collapse = ","),file = con)
+      # cata("    range: ", paste0(range, collapse = ","),file = con)
+      cata(ranges_to_define(range), file = con)
     }
   }
-  x <- sort(range(x))
-  range <- sort(range)
-  x[1] >= range[1] & x[2] <= range[2]
-}
+  # make a list if not a list
+  if (!is.list(range)) {
+    range <- list(range) }
+  
+  # Parse entire list
+  lists <- parse_list_no_char(range)
+  cont <- unlist(lists[1])
+  disc <- unlist(lists[2])
+  
+  # remove values in range first
+  min <- cont[1]
+  max <- cont[2]
+  x <- x[!(x <= max & x >= min)]
+  
+  # remove values in discrete set
+  x <- x[!(x %in% disc)]
+  
+  # if x is empty, everything was in range(s)
+  empty <- (is_empty(x))
+  return(empty)
+  
+} # check_range
 
 
 
